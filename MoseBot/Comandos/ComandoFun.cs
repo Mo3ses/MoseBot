@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Interactivity.Extensions;
 using System.Threading.Tasks;
 
 namespace MoseBot.Comandos
@@ -23,5 +24,17 @@ namespace MoseBot.Comandos
                 .SendMessageAsync($"A soma é: {min + max}")
                 .ConfigureAwait(false);
         }
+        [Command("resposta")]
+        public async Task Resposta(CommandContext ctx)
+        {
+            var interatividade = ctx.Client.GetInteractivity();
+
+            var mensagem = await interatividade
+                .WaitForMessageAsync(x => x.Channel == ctx.Channel)
+                .ConfigureAwait(false);
+
+            await ctx.Channel.SendMessageAsync(mensagem.Result.Content + " :thumbsup:");
+        }
+
     }
 }

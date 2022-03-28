@@ -1,9 +1,12 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Extensions;
 using Microsoft.Extensions.Logging;
 using MoseBot.Comandos;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +16,7 @@ namespace MoseBot
     internal class Bot
     {
         public DiscordClient Client { get; private set; }
+        public InteractivityExtension Interatividade { get; private set; }
         public CommandsNextExtension Comandos { get; private set; }
         public async Task RunAsync()
         {
@@ -35,6 +39,12 @@ namespace MoseBot
             Client = new DiscordClient(config);
 
             Client.Ready += OnClientReady;
+
+            Client.UseInteractivity(new InteractivityConfiguration
+            {
+                Timeout = TimeSpan.FromMinutes(3),
+
+            });
 
             CommandsNextConfiguration ComandosConfig = new CommandsNextConfiguration
             {
