@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.EventHandling;
 using DSharpPlus.Interactivity.Extensions;
+using MoseBot.Atributos;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace MoseBot.Comandos
         
         [Command("ping")]
         [Description("Pong")]
+        [CategoriaNecessaria(ChannelCheckMode.Any, "Text Channels")]
         public async Task Ping(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("Pong!").ConfigureAwait(false);
