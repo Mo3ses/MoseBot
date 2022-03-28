@@ -7,6 +7,7 @@ using MoseBot.Atributos;
 using MoseBot.Handler.Dialogo;
 using MoseBot.Handler.Dialogo.Passo;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -109,6 +110,31 @@ namespace MoseBot.Comandos
             await ctx.Channel.SendMessageAsync(input).ConfigureAwait(false);
 
             await ctx.Channel.SendMessageAsync(value.ToString()).ConfigureAwait(false);
+        }
+        [Command("emojidg")]
+        public async Task EmojiDialogue(CommandContext ctx)
+        {
+            var Sim = new TextStep("Você escolheu sim", null);
+            var Nao = new IntStep("Você escolheu não", null);
+
+            var emojiStep = new ReactionStep("Sim ou Não?", new Dictionary<DiscordEmoji, ReactionStepData>
+            {
+                { DiscordEmoji.FromName(ctx.Client, ":thumbsup:"), new ReactionStepData { Content = "Sim", NextStep = Sim } },
+                { DiscordEmoji.FromName(ctx.Client, ":thumbsdown:"), new ReactionStepData { Content = "Nao", NextStep = Nao } }
+            });
+
+            var userChannel = await ctx.Member.CreateDmChannelAsync().ConfigureAwait(false);
+
+            var inputDialogueHandler = new DialogueHandler(
+                ctx.Client,
+                userChannel,
+                ctx.User,
+                emojiStep
+            );
+
+            bool succeeded = await inputDialogueHandler.ProcessDialogue().ConfigureAwait(false);
+
+            if (!succeeded) { return; }
         }
     }
 }
