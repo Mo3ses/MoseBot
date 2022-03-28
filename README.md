@@ -6,7 +6,7 @@ MoseBot é um bot do discord criado em C# usando a biblioteca D#.
 - [x] Comandos Básicos
 - [x] Interatividade
 - [x] Gerenciar Cargos
-- [ ] Comandos Avançados
+- [x] Comandos Avançados
 - [ ] Implementar Banco de Dados
 - [ ] Sistema de Level Up
 

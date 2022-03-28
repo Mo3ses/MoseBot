@@ -1,6 +1,10 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
+using DSharpPlus.Interactivity.EventHandling;
 using DSharpPlus.Interactivity.Extensions;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MoseBot.Comandos
@@ -36,6 +40,32 @@ namespace MoseBot.Comandos
 
             await ctx.Channel.SendMessageAsync(mensagem.Result.Content + " :thumbsup:");
         }
+        [Command("enquete")]
+        [Description("Cria uma enquete")]
+        public async Task Poll(CommandContext ctx, TimeSpan duracao, params DiscordEmoji[] EmojiOptions)
+        {
+            var interatividade = ctx.Client.GetInteractivity();
+            var options = EmojiOptions.Select(x => x.ToString());
 
+            var PollEmbed = new DiscordEmbedBuilder
+            {
+                Title = "Enquete",
+                Description = string.Join("", options)
+            };
+
+            var PollMesage = await ctx.Channel.SendMessageAsync(embed: PollEmbed).ConfigureAwait(false);
+            
+            foreach(var option in EmojiOptions)
+            {
+                await PollMesage.CreateReactionAsync(option).ConfigureAwait(false);
+            }
+
+            var result = await interatividade.CollectReactionsAsync(PollMesage, duracao).ConfigureAwait(false);
+            var distincResult = result.Distinct();
+
+            var results = distincResult.Select(x => $"{x.Emoji}: {x.Total}");
+
+            await ctx.Channel.SendMessageAsync(string.Join("\n", results)).ConfigureAwait(false);
+        }
     }
 }
