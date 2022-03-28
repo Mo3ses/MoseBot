@@ -4,6 +4,8 @@ using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.EventHandling;
 using DSharpPlus.Interactivity.Extensions;
 using MoseBot.Atributos;
+using MoseBot.Handler.Dialogo;
+using MoseBot.Handler.Dialogo.Passo;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,6 +70,45 @@ namespace MoseBot.Comandos
             var results = distincResult.Select(x => $"{x.Emoji}: {x.Total}");
 
             await ctx.Channel.SendMessageAsync(string.Join("\n", results)).ConfigureAwait(false);
+        }
+        [Command("dialogo")]
+        public async Task Dialogue(CommandContext ctx)
+        {
+            var inputStep = new TextStep("Alguma Coisa", null, 10);
+            var funnyStep = new TextStep("Buenos Dias", null);
+            var intStep = new IntStep("Hola amigo", null, maxValue: 50);
+
+            string input = string.Empty;
+            int value = 0;
+
+            inputStep.OnValidResult += (result) => 
+            {
+                input = result;
+
+                if(result == "Olá Amigo")
+                {
+                    inputStep.SetNextStep(funnyStep);
+                }
+            };
+
+            intStep.OnValidResult += (result) => value = result;
+
+            var userChannel = await ctx.Member.CreateDmChannelAsync().ConfigureAwait(false);
+
+            var inputDialogueHandler = new DialogueHandler(
+                ctx.Client,
+                userChannel,
+                ctx.User,
+                inputStep
+                );
+
+            bool succeeded = await inputDialogueHandler.ProcessDialogue().ConfigureAwait(false);
+
+            if (!succeeded) { return; }
+
+            await ctx.Channel.SendMessageAsync(input).ConfigureAwait(false);
+
+            await ctx.Channel.SendMessageAsync(value.ToString()).ConfigureAwait(false);
         }
     }
 }
