@@ -25,6 +25,7 @@ namespace MoseBot.Comandos
                 .ConfigureAwait(false);
         }
         [Command("resposta")]
+        [Description("Devolve a respota com um Joinha")]
         public async Task Resposta(CommandContext ctx)
         {
             var interatividade = ctx.Client.GetInteractivity();

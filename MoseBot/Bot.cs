@@ -57,6 +57,7 @@ namespace MoseBot
             Comandos = Client.UseCommandsNext(ComandosConfig);
 
             Comandos.RegisterCommands<ComandoFun>();
+            Comandos.RegisterCommands<ComandoRoles>();
 
             await Client.ConnectAsync();
 
