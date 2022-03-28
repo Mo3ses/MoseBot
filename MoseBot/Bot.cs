@@ -2,11 +2,9 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
+using MoseBot.Comandos;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,11 +40,13 @@ namespace MoseBot
             {
                 StringPrefixes = new string[] {configJson.Prefix},
                 EnableMentionPrefix = true,
-                EnableDms = false
-
+                EnableDms = false,
+                DmHelp = true
             };
 
             Comandos = Client.UseCommandsNext(ComandosConfig);
+
+            Comandos.RegisterCommands<ComandoFun>();
 
             await Client.ConnectAsync();
 
